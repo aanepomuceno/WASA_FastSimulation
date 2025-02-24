@@ -49,7 +49,7 @@ $./wasa_main wasa_simulation.in
 
 The output of the simulation (energy recorded in the EM calorimeter and hit position) will be store in four ROOT files WASAFastOutput_t*.root . The number of output files can modified in the file WASA_Fast/wasa_main.cc (line 64). If you change it, you need the recompile the code.
 
-Use the macro pi0_analysis.C to analyze the output:
+Copy the macro WASA_Fast/pi0_analysis.C to your WASA-build folder, and use it to analyze the output:
 
 $ root -l
 root [0] .x pi0_analysis.C
