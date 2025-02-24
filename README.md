@@ -51,5 +51,5 @@ The output of the simulation (energy recorded in the EM calorimeter and hit posi
 
 Copy the macro WASA_Fast/pi0_analysis.C to your WASA-build folder, and use it to analyze the output:
 
-$ root -l
+$ root -l 
 root [0] .x pi0_analysis.C
