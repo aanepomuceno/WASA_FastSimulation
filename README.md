@@ -31,6 +31,7 @@ If all goes well, the executable file wasa_main will be created in your WASA-bui
 HOW TO  RUN
 
 1. Visualize the geometry
+   
 To visualize the geometry, we must have Qt5 and OpenGL libraries and header in your system, and Geant4 must have been compile with the option GEANT4_USE_QT=ON.
 To  visualize the geometry, first run the executable:
 
@@ -39,6 +40,7 @@ $ ./wasa_main
 On the visualization window, type after “Session”: /control/execute vis_wasa.mac
 
 2. Run a simulation
+   
 The macro wasa_simulation.in is the input file to simulate a neutral pion (pi0) event decaying into photons that will hit the EM calorimeter. This simulation shoots 10000 neutral pions of kinetic energy of 200 MeV,  from the center of the detector, in random directions. Check the file to see how to change the primary particle, kinematics and number of events.
 It is possible to generate different energies and angle distributions. For details, see the Geant4 General Particle Source (GPS) documentation: 
 https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html#g4gps
