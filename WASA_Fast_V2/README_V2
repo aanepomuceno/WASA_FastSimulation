@@ -1,0 +1,17 @@
+
+This new version (V2) of the WASA FASt code optimize the ROOT file ouput, create braches for MCTruth, EMCAL, HCAL and Tracker, instead of 
+a branch for each event, which was very memory consuming.
+
+The followig codes were modified:
+
+1. WASAOutput.cc - Rewrite how the braches were created and filled, anded KE Truth and primary particle position to Ntuple. Also, added the new function WASAOutput::SaveEvent() 
+2. WASAOutput.hh - create the vectors that will store the variable values in each event.
+3. WASAEventAction.cc - add the line WASAOutput::Instance()->SaveEvent() in void WASAEventAction::EndOfEventAction()
+5. WASAPrimaryGeneratorAction.cc - In GeneratePrimaries(), added primary particle kinetic Energy and primary vertex position to pass to WASAPrimaryParticleInformation class.
+6. WASAPrimaryParticleInformation.cc and WASAPrimaryParticleInformation.hh - Added the variables aKineticEnergy, aMCPosition, and related functions, to retrieve primary MC kinetic energy and primary vetex position. 
+7. WASATrackingAction.cc - Added primary MC kinetic energy and primary vetex position to be passed to the Ntuple created by WASAOutput.cc.
+8. WASAFastSimModelEMCal.cc and WASAFastSimModelHCal.cc - Changed the postion of the variables when called the function WASAOutput::Instance()->SaveTrack, in order to have the correct positional arguments implemented in WASAOutput.hh. 
+9. The macro pi0_analysis.C was rewrited to read the new file format.
+
+
+
