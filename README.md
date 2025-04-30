@@ -9,16 +9,16 @@ Observations
 
 HOW TO COMPILE
 
-1. Copy the entire directory WASA_FAST to some location. For example, let us say that this location is /home/you/.
+1. Copy the entire directory WASA_FAST_V2 to some location. For example, let us say that this location is /home/you/.
 2. In the /home/you/ directory, alongside  WASA_FAST folder, create the folder WASA-build:
 
 $ mkdir WASA-build
 $ ls
-WASA-build  WASA_FAST
+WASA-build  WASA_FAST_V2
 
 3. Inside the folder WASA-build, run CMake:
 
-$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST
+$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST_V2
 
 where <path_to_geant4-v11-install> is the path to where Geant4.11 is installed. 
 
@@ -49,10 +49,10 @@ To run the simulation, type on a Linux terminal:
 
 $./wasa_main wasa_simulation.in
 
-The output of the simulation (energy recorded in the EM calorimeter and hit position) will be store in four ROOT files WASAFastOutput_t*.root . The number of output files can modified in the file WASA_Fast/wasa_main.cc (line 64). If you change it, you need the recompile the code.
+The output of the simulation (energy recorded in the EM calorimeter and hit position) will be store in four ROOT files WASAFastOutput_t0.root. 
 
 Run the macro pi0_analysis.C to analyze the output:
 
 $ root -l 
 
-root [0] .x pi0_analysis.C
+root [0] .x pi0_analysis_v2.C
