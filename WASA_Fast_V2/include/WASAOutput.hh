@@ -32,6 +32,7 @@
 
 #include "G4ThreeVector.hh"
 #include "globals.hh"
+#include <vector>
 
 /// Handling the saving to the file.
 ///
