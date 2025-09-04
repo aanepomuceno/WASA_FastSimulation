@@ -12,7 +12,7 @@ HOW TO COMPILE
 1. Copy the entire directory WASA_FAST_V3 to some location. For example, let us say that this location is /home/you/.
 2. In the /home/you/ directory, alongside  WASA_FAST folder, create the folder WASA-build:
 
-$ mkdir WASA-build
+$ mkdir WASA-build \
 $ ls
 WASA-build  WASA_FAST_V3
 
