@@ -9,16 +9,16 @@ Observations
 
 HOW TO COMPILE
 
-1. Copy the entire directory WASA_FAST_V2 to some location. For example, let us say that this location is /home/you/.
+1. Copy the entire directory WASA_FAST_V3 to some location. For example, let us say that this location is /home/you/.
 2. In the /home/you/ directory, alongside  WASA_FAST folder, create the folder WASA-build:
 
 $ mkdir WASA-build
 $ ls
-WASA-build  WASA_FAST_V2
+WASA-build  WASA_FAST_V3
 
 3. Inside the folder WASA-build, run CMake:
 
-$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST_V2
+$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST_V3
 
 where <path_to_geant4-v11-install> is the path to where Geant4.11 is installed. 
 
