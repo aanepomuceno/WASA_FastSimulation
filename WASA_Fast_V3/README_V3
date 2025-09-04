@@ -1,0 +1,22 @@
+
+Date: 04/09/2025
+Andre Nepomuceno
+
+In this new version (V3) of the WASA FASt, the SEC geometry is read from a GDML file produced by Bernhard 
+The the detector resolution for muons was updated with Nellie results (Bernhard student)
+
+The followig codes were modified: 
++ WASADetectorConstruction.cc 
++ WASADetectorConstruction.hh
++ WASADetectorParametrisation.cc
++ WASAFastSimModelEMCal.cc
+
+To make the geometry and the WASA code work properly, the GDML file (filtered_barrel.gdml) had to be altered. A new solid called MOTHER_2 was added, to be the world volume.
+The geometry also has a volume called MOTHER, which makes the empy space around the detector, and the holes inside the detector, between the SEC modules (volume Empty_Area).
+
+The code WASAFastSimModelEMCal.cc was considerably altered from the preivious version to deal with this new geometry. This is why there are many "if statements" in the code.
+The muon is treated as a special case, since it can cross the detector. In its way, it will encounter many intersection between detector (SEC) and holes (Empty_Area). As result, 
+the output ntuble will have many hits for the muon. For the other partcles, as they are killed at the detector entrance, there is only one hit per event.
+
+
+
