@@ -1,6 +1,6 @@
 WASA Fast Simulation \
 Andre Nepomuceno - September 2025 \
-The lastest version (V3) has the real SEC geometry implemented.
+The lastest version (V3) has the real SEC geometry implemented.\
 Observations
 1. You need Geant4 version 4.11 and ROOT 6.x to run this application
 2. At the moment, only the electromagnetic calorimeter response is implemented
