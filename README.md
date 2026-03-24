@@ -1,5 +1,5 @@
 WASA Fast Simulation \
-Andre Nepomuceno - September 2025 \
+Andre Nepomuceno - March 2026 \
 The lastest version (V4) has the real SEC geometry and TPC implemented.\
 Observations
 1. You need Geant4 version 4.11 and ROOT 6.x to run this application
