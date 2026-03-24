@@ -1,0 +1,186 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+/// \brief Implementation of the WASADetectorConstruction class
+/// Based on Geant4 Par02 parameterisations example
+//  Andre Nepomuceno - February 2026
+
+#include "WASADetectorConstruction.hh"
+#include "G4ProductionCuts.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4RegionStore.hh"
+#include "G4GDMLParser.hh"
+#include "G4AutoDelete.hh"
+#include "G4GlobalMagFieldMessenger.hh"
+#include "G4AutoDelete.hh"
+#include "G4GeometryManager.hh"
+
+#include "G4Material.hh"
+#include "G4MaterialTable.hh"
+#include "G4Element.hh"
+#include "G4ProductionCuts.hh"
+#include "G4ElementTable.hh"
+#include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4LogicalVolume.hh"
+#include "G4ThreeVector.hh"
+#include "G4PVPlacement.hh"
+#include "G4PVReplica.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4NistManager.hh"
+#include "G4RegionStore.hh"
+#include "G4VisAttributes.hh"
+#include "G4PhysicalConstants.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+WASADetectorConstruction::WASADetectorConstruction() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+WASADetectorConstruction::~WASADetectorConstruction() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* WASADetectorConstruction::Construct() {
+  
+   G4double a;
+   G4double z;
+   G4double density;
+   G4int fCheckOverlaps = 0;
+   G4NistManager* nistManager = G4NistManager::Instance();
+   
+//-------------Vacuum-------------------------------------------
+   new G4Material("Galactic", z=1., a=1.01*g/mole, density= universe_mean_density,
+                  kStateGas, 2.73*kelvin, 3.e-18*pascal);
+   auto defaultMaterial = G4Material::GetMaterial("Galactic");
+   
+   G4NistManager* nist = G4NistManager::Instance();
+   G4Material* Air = nist->FindOrBuildMaterial("G4_AIR");
+
+//----------- TCP Material----------------------
+
+   G4Element* elO = nistManager->FindOrBuildElement("O");
+   G4Element* elC = nistManager->FindOrBuildElement("C");
+   G4Element* elAr = nistManager->FindOrBuildElement("Ar");
+   
+   G4Material* CO2_mat = new G4Material("CO2", 1.7E-3*g/cm3, 2);
+   CO2_mat->AddElementByNumberOfAtoms(elC, 1);
+   CO2_mat->AddElementByNumberOfAtoms(elO, 2);
+  
+   G4Material* TPC_mat = new G4Material("TPC_mat", 1.7E-3*g/cm3, 2);  
+   TPC_mat->AddElementByMassFraction(elAr, 80.0*perCent);  
+   TPC_mat->AddMaterial(CO2_mat, 20.0*perCent);
+
+//-------//TPC Dimensions (HIBEAM)--------------------
+    G4double tpc_innerRadius = 22.0*cm;
+    G4double tpc_outerRadius = 32.0*cm;
+    G4double tpc_hz = 25.8*cm;  //HALF length in Z
+    G4double tpc_startAngle = 0.*deg;
+    G4double tpc_spanningAngle = 360.*deg;
+  
+//-----------Load the GDML file (SEC calorimeter)-------------------------------------
+   G4GDMLParser parser;
+   parser.Read("filtered_barrel.gdml"); 
+
+//------------Get world from GDML-----------------------------------------
+  G4VPhysicalVolume* worldPV = parser.GetWorldVolume();
+  if (worldPV)  G4cout << "Found volume: " << worldPV->GetName() << G4endl;
+  else G4cout << "World Physical volume not found!" << G4endl;
+//  G4LogicalVolume* logicGDMLDetector = worldPV->GetLogicalVolume();
+  G4LogicalVolume* mother1_LV = parser.GetVolume("MOTHER1");
+
+//-----------Build TPC inside SEC-----------------------------------------------------
+auto tpcS = new G4Tubs("TPC",tpc_innerRadius,tpc_outerRadius,tpc_hz,tpc_startAngle,tpc_spanningAngle);
+auto tpcLV = new G4LogicalVolume(tpcS,TPC_mat,"TPCLV");
+new G4PVPlacement(0,G4ThreeVector(0., 0., 0.),tpcLV,"TPCPV", mother1_LV, false, 0, fCheckOverlaps); 
+
+//---------------Makes SECs volumes becoming a G4Region----------------------------
+//To make FastSim work properly, MOTHER1 volume (empty space) must be included in the calo G4Region
+   for (int i = 0; i <= 16; i++) {
+        std::ostringstream sec_modulo;
+        sec_modulo << "SECE" << i;  // construct SECEX, X=0,1,...,16.
+        G4LogicalVolume* secLogVol = parser.GetVolume(sec_modulo.str());
+        if (secLogVol) {
+           fECalList.push_back( new G4Region( secLogVol->GetName() ) );
+           fECalList.back()->AddRootLogicalVolume( secLogVol );
+           G4cout << "Found volume: " << secLogVol->GetName() << G4endl;
+           
+        } else {
+            G4cout << "Volume " << sec_modulo.str() << " not found!" << G4endl;
+        }
+   }
+   
+    G4LogicalVolume* secLogVol = parser.GetVolume("MOTHER1");
+    fECalList.push_back( new G4Region( secLogVol->GetName() ) );
+    fECalList.back()->AddRootLogicalVolume( secLogVol );
+    G4cout << "Found volume: " << secLogVol->GetName() << G4endl;
+
+//-------Makes TPC volume becoming a G4Region---------------------
+
+    G4Region* tpcRegion = new G4Region("TPC_region");
+    tpcLV->SetRegion(tpcRegion);
+    tpcRegion->AddRootLogicalVolume(tpcLV);
+    
+    G4GeometryManager::GetInstance()->OpenGeometry();
+    G4GeometryManager::GetInstance()->CloseGeometry(true);
+
+    return worldPV;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void WASADetectorConstruction::ConstructSDandField() {
+
+  for ( G4int iterECal = 0; iterECal < G4int( fECalList.size() ); iterECal++ ) {
+    // Bound the fast simulation model for the electromagnetic calorimeter
+    // to all the corresponding Geant4 regions
+    WASAFastSimModelEMCal* fastSimModelEMCal
+      = new WASAFastSimModelEMCal( "fastSimModelEMCal", fECalList[ iterECal ],
+                                    WASADetectorParametrisation::eWASA );
+                                     
+    // Register the fast simulation model for deleting
+    G4AutoDelete::Register(fastSimModelEMCal);
+  }
+
+//----------Bound the fast simulation model for the TPC-----------------------
+    G4RegionStore* regionStore_TPC = G4RegionStore::GetInstance();
+    G4Region* tpcRegion = regionStore_TPC->GetRegion("TPC_region");
+    
+    if (!tpcRegion) 
+     G4cout << "ERROR: TPC_region not found!" << G4endl;
+
+    WASAFastSimModelTracker* fastSimModelTracker
+     = new WASAFastSimModelTracker( "fastSimModelTracker" , tpcRegion, 
+                                     WASADetectorParametrisation::eWASA );
+    G4AutoDelete::Register(fastSimModelTracker);
+  
+///---------- Add global magnetic field/--------------------
+   G4ThreeVector fieldValue = G4ThreeVector(0., 0., 0.);
+   fMagFieldMessenger = new G4GlobalMagFieldMessenger(fieldValue);
+   fMagFieldMessenger->SetVerboseLevel(1);
+}
+

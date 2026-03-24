@@ -1,0 +1,26 @@
+
+Date: 24/02/2026
+Andre Nepomuceno
+
+In this new version (V4) of the WASA FaSt, the SEC geometry is read from a GDML (same as in version 3), but a TPC is included WASADetectorConstruction.
+Another important modification is the dE/dx calculation and smearing added from William's code.
+It was also checked that the Energy transfer for the calorimeter is KE_cal = KE - Edep, where Edep is the energy deposited in the TPC.
+
+The followig codes were modified: 
++ WASADetectorConstruction.cc 
++ WASADetectorParametrisation.cc
++ WASAFastSimModelEMCal.cc
++ WASAFastSimModelTracker.cc
++ WASASmearer.cc (added Bethe-Bloch formula)
++ WASAOutput.cc  (added Tracker folder to output file)
+
+Important notes:
+
++ To make the geometry and the WASA code work properly with the TPC, the code WASAFastSimModelEMCal.cc had to be altered again, to make the neutral particles get through the TPC. Otherwise, the Geant4 gets stuck. 
++ In the specific muon part of the code, an if statement concern the TPC was also added, to make the code trigger the FastTracker model for muons.
++ In WASAFastSimModelTracker, a threshold energy of 10 KeV was included as the minimum energy to give a signal in TPC.
++ The SEC modulus are built having always empty space between two modulus. So, a muon always encounter empty space when leave a SEC volume.
+
+
+
+

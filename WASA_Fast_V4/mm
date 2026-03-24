@@ -1,0 +1,40 @@
+#
+#/tracking/verbose 2
+#
+#/globalField/setValue 0 0 0 tesla
+#/globalField/verbose 1
+#
+###/gun/particle mu-
+###/gun/energy 100 GeV
+###/run/beamOn 1000
+#
+#/tracking/verbose 1
+#/gun/particle pi0
+#/gun/energy 0.2 GeV
+
+/globalField/setValue 0 0 0 tesla
+/globalField/verbose 1
+#/gps/verbose 1
+/gps/particle mu+
+/gps/pos/type Point
+#/gps/pos/centre 0.1  80.  0. cm
+/gps/pos/centre 0.1  70.  0 cm
+#12.8069 cm
+#/gps/pos/centre 0.1  45.  150 cm
+#/gps/direction 0. -1 -0.2
+#/gps/direction 0. -0.2425 0.97014
+#/gps/direction 0. -1 0.2
+/gps/direction 0. 0.01 -1
+#/gps/ang/type iso
+/gps/ene/type Mono
+#/gps/ene/mono 172.5 MeV
+/gps/ene/mono 310 MeV
+/run/beamOn 100000
+
+#
+###/gun/particle pi-
+###/gun/energy 20 GeV
+###/run/beamOn 100
+#
+exit
+
