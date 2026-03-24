@@ -1,24 +1,24 @@
 WASA Fast Simulation \
 Andre Nepomuceno - September 2025 \
-The lastest version (V3) has the real SEC geometry implemented.\
+The lastest version (V4) has the real SEC geometry and TPC implemented.\
 Observations
 1. You need Geant4 version 4.11 and ROOT 6.x to run this application
-2. At the moment, only the electromagnetic calorimeter response is implemented
+2. Electromagnetic calorimeter response and dE/dx from TPC are implemented
 3. The source files are located in WASA_FAST/src directory
 4. The head files are located in WASA_FAST/include directory
 
 HOW TO COMPILE
 
-1. Copy the entire directory WASA_FAST_V3 to some location. For example, let us say that this location is /home/you/.
+1. Copy the entire directory WASA_FAST_V4 to some location. For example, let us say that this location is /home/you/.
 2. In the /home/you/ directory, alongside  WASA_FAST folder, create the folder WASA-build:
 
 $ mkdir WASA-build \
 $ ls
-WASA-build  WASA_FAST_V3
+WASA-build  WASA_FAST_V4
 
 3. Inside the folder WASA-build, run CMake:
 
-$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST_V3
+$cmake -DCMAKE_PREFIX_PATH=<path_to_geant4-v11-install>  /home/you/WASA_FAST_V4
 
 where <path_to_geant4-v11-install> is the path to where Geant4.11 is installed. 
 
@@ -51,7 +51,7 @@ $./wasa_main wasa_simulation.in
 
 The output of the simulation (energy recorded in the EM calorimeter and hit position) will be store in four ROOT files WASAFastOutput_t0.root. 
 
-Run the macro pi0_analysis.C to analyze the output:
+Run the macro pi0_analysis_v2.C to analyze the output:
 
 $ root -l 
 
